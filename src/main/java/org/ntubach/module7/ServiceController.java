@@ -3,16 +3,18 @@ package org.ntubach.module7;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 // Controller for the service
 @RestController
 public class ServiceController {
-    private List<Student> students = new ArrayList<>();
-    private List<Course> courses = new ArrayList<>();
+    private final List<Student> students = new ArrayList<>();
+    private final List<Course> courses = new ArrayList<>();
     private List<Registrar> registrar = new ArrayList<>();
     private final AtomicInteger counter = new AtomicInteger();
 
@@ -25,6 +27,74 @@ public class ServiceController {
     public ResponseEntity index() {
         return ResponseEntity.ok("Hello World! Niko Tubach Module7");
     }
+    // --------- STUDENTS ENDPOINTS ---------
+
+    // GET a student based on student id
+    @GetMapping(value = "/student")
+    public ResponseEntity<Student> getStudent(@RequestParam(value = "id") Integer id) {
+        for (Student s : students) {
+            if (Objects.equals(s.getId(), id))
+                return ResponseEntity.ok(s);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // POST an additional new student
+    @PostMapping(value = "/student")
+    public ResponseEntity<Student> addStudent(@RequestParam(value = "id")  Integer id,
+                                            @RequestParam(value = "firstname", required = false) String firstname,
+                                            @RequestParam(value = "lastname") String lastname,
+                                            @RequestParam(value = "dateOfBirth") String dateOfBirth,
+                                            @RequestParam(value = "email") String email) {
+        // Validation on newCourse info as needed
+        Student newStudent = new Student(id, firstname, lastname, LocalDateTime.now(), "");
+        if (newStudent.setDateOfBirth(dateOfBirth) && newStudent.setEmail(email)) {
+            students.add(newStudent);
+            return ResponseEntity.ok(newStudent);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    // PUT and update to a specified student id
+    @PutMapping(value = "/student")
+    public ResponseEntity<Student> updateStudent(@RequestParam(value = "id") Integer id,
+                                                 @RequestParam(value = "firstname", required = false) String firstname,
+                                                 @RequestParam(value = "lastname") String lastname,
+                                                 @RequestParam(value = "dateOfBirth") String dateOfBirth,
+                                                 @RequestParam(value = "email") String email) {
+        // Validation on updateStudent info as needed
+        for (int i = 0; i < students.size(); i++) {
+            if (Objects.equals(students.get(i).getId(), id)) {
+                Student newStudent = new Student(id, firstname, lastname, LocalDateTime.now(), "");
+                if (newStudent.setDateOfBirth(dateOfBirth) && newStudent.setEmail(email)) {
+                    students.set(i, newStudent);
+                    return ResponseEntity.ok(newStudent);
+                }
+                return ResponseEntity.badRequest().build();
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // DELETE student based on student id if it exists
+    @DeleteMapping(value = "/student")
+    public ResponseEntity<Student> deleteStudent(@RequestParam(value = "id") Integer id) {
+        for (int i = 0; i < students.size(); i++) {
+            if (Objects.equals(students.get(i).getId(), id)) {
+                return ResponseEntity.ok(students.remove(i));
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // GET all students
+    @GetMapping(value = "/student/all")
+    public ResponseEntity<List<Student>> getAllStudents() {
+        return ResponseEntity.ok(students);
+    }
+
+
+    // --------- COURSES ENDPOINTS ---------
 
     // GET a course based on courseNumber
     @GetMapping(value = "/course")
@@ -75,6 +145,8 @@ public class ServiceController {
     public ResponseEntity<List<Course>> getAllCourses() {
         return ResponseEntity.ok(courses);
     }
+
+    // --------- REGISTRAR ENDPOINTS ---------
 
     void init() {
 

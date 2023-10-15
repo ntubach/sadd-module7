@@ -2,6 +2,7 @@ package org.ntubach.module7;
 
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 // Model for Student object
 public class Student {
@@ -45,12 +46,17 @@ public class Student {
         this.lastName = lastName;
     }
 
-    public LocalDateTime getDateOfBirth() {
-        return dateOfBirth;
+    public String getDateOfBirth() {
+        return dateOfBirth.toString();
     }
 
-    public void setDateOfBirth(LocalDateTime dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    public Boolean setDateOfBirth(String dateOfBirth) {
+        try {
+            this.dateOfBirth = LocalDateTime.parse(dateOfBirth);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public String getEmail() {
