@@ -1,6 +1,6 @@
 package org.ntubach.module7;
 
-import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -10,10 +10,10 @@ public class Student {
     private Integer id;
     private String firstName;
     private String lastName;
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
     private String email;
 
-    Student(int id, String firstname, String lastname, LocalDateTime dateOfBirth, String email) {
+    Student(int id, String firstname, String lastname, LocalDate dateOfBirth, String email) {
         this.id = id;
         this.firstName = firstname;
         this.lastName = lastname;
@@ -52,7 +52,7 @@ public class Student {
 
     public Boolean setDateOfBirth(String dateOfBirth) {
         try {
-            this.dateOfBirth = LocalDateTime.parse(dateOfBirth);
+            this.dateOfBirth = LocalDate.parse(dateOfBirth);
             return true;
         } catch (Exception e) {
             return false;
