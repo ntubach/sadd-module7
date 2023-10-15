@@ -178,6 +178,13 @@ public class ServiceController {
             if (Objects.equals(registrar.get(i).getCourseNumber(), courseNumber)) {
                 Registrar r = registrar.get(i);
                 if (r.addStudentId(id)) {
+                    for (Integer student : registrar.get(i).getStudentIdList()) {
+                        if (Objects.equals(student, id)) {
+                            // Student in the course already
+                            ResponseEntity re = ResponseEntity.unprocessableEntity().body("Course " + courseNumber + " already has student " + id);
+                            return re;
+                        }
+                    }
                     // Student added to course
                     registrar.set(i, r);
                     return ResponseEntity.ok(r);
@@ -206,7 +213,7 @@ public class ServiceController {
                 return ResponseEntity.ok(studentList);
             }
         }
-        ResponseEntity re = ResponseEntity.badRequest().body("No course with courseNumber " + courseNumber + "in the registrar.");
+        ResponseEntity re = ResponseEntity.badRequest().body("No course with courseNumber " + courseNumber + " in the registrar.");
         return re;
     }
 
@@ -227,27 +234,27 @@ public class ServiceController {
                 return re;
             }
         }
-        ResponseEntity re = ResponseEntity.badRequest().body("No course with courseNumber " + courseNumber + "in the registrar.");
+        ResponseEntity re = ResponseEntity.badRequest().body("No course with courseNumber " + courseNumber + " in the registrar.");
         return re;
     }
 
 
     void init() {
-        students.add(new Student(counter.incrementAndGet(), "John", "Doe",      LocalDate.parse("1888-03-20"), "johndoe@gmail.com"));
-        students.add(new Student(counter.incrementAndGet(), "Jane", "Doe",      LocalDate.parse("1928-12-24"), "janedoe@gmail.com"));
-        students.add(new Student(counter.incrementAndGet(), "Liandra", "Mia",   LocalDate.parse("2000-01-31"), "liamia@aol.com"));
+        students.add(new Student(counter.incrementAndGet(), "John", "Doe", LocalDate.parse("1888-03-20"), "johndoe@gmail.com"));
+        students.add(new Student(counter.incrementAndGet(), "Jane", "Doe", LocalDate.parse("1928-12-24"), "janedoe@gmail.com"));
+        students.add(new Student(counter.incrementAndGet(), "Liandra", "Mia", LocalDate.parse("2000-01-31"), "liamia@aol.com"));
         students.add(new Student(counter.incrementAndGet(), "Carson", "Pulser", LocalDate.parse("2008-04-22"), "carpul@yahoo.com"));
-        students.add(new Student(counter.incrementAndGet(), "Irina", "Iatvaz",  LocalDate.parse("1970-11-26"), "irinaiatvaz@jh.edu"));
+        students.add(new Student(counter.incrementAndGet(), "Irina", "Iatvaz", LocalDate.parse("1970-11-26"), "irinaiatvaz@jh.edu"));
         students.add(new Student(counter.incrementAndGet(), "Adrian", "Cother", LocalDate.parse("1925-06-13"), "acother@gmail.com"));
-        students.add(new Student(counter.incrementAndGet(), "Litaf", "Vancai",  LocalDate.parse("1978-08-17"), "litvan123@hotmail.com"));
+        students.add(new Student(counter.incrementAndGet(), "Litaf", "Vancai", LocalDate.parse("1978-08-17"), "litvan123@hotmail.com"));
         students.add(new Student(counter.incrementAndGet(), "Defoje", "Fancle", LocalDate.parse("1996-05-20"), "dfancle@mil.gov"));
         students.add(new Student(counter.incrementAndGet(), "Undeta", "Opinat", LocalDate.parse("1995-08-15"), "undetao@gmail.com"));
-        students.add(new Student(counter.incrementAndGet(), "Qapin", "Yuanli",  LocalDate.parse("1982-09-14"), "yuanliq@cv1.com"));
-        students.add(new Student(counter.incrementAndGet(), "Paul", "Jones",    LocalDate.parse("1978-10-23"), "pjones@gmail.com"));
-        students.add(new Student(counter.incrementAndGet(), "Gram", "Martin",   LocalDate.parse("1956-10-12"), "gram.martin@avast.com"));
-        students.add(new Student(counter.incrementAndGet(), "Biats", "Day",     LocalDate.parse("1999-12-23"), "daybiats@outlook.com"));
-        students.add(new Student(counter.incrementAndGet(), "Cave", "Traves",   LocalDate.parse("1958-06-30"), "cavet@world.org"));
-        students.add(new Student(counter.incrementAndGet(), "Zena", "Human",    LocalDate.parse("1953-09-12"), "humanz404@gmail.com"));
+        students.add(new Student(counter.incrementAndGet(), "Qapin", "Yuanli", LocalDate.parse("1982-09-14"), "yuanliq@cv1.com"));
+        students.add(new Student(counter.incrementAndGet(), "Paul", "Jones", LocalDate.parse("1978-10-23"), "pjones@gmail.com"));
+        students.add(new Student(counter.incrementAndGet(), "Gram", "Martin", LocalDate.parse("1956-10-12"), "gram.martin@avast.com"));
+        students.add(new Student(counter.incrementAndGet(), "Biats", "Day", LocalDate.parse("1999-12-23"), "daybiats@outlook.com"));
+        students.add(new Student(counter.incrementAndGet(), "Cave", "Traves", LocalDate.parse("1958-06-30"), "cavet@world.org"));
+        students.add(new Student(counter.incrementAndGet(), "Zena", "Human", LocalDate.parse("1953-09-12"), "humanz404@gmail.com"));
 
         courses.add(new Course(100, "Introduction to Mathematics"));
         courses.add(new Course(501, "Cybersecurity in Developing Environs"));
@@ -261,5 +268,11 @@ public class ServiceController {
             }
             registrar.add(new Registrar(courses.get(i).getCourseNumber(), ids));
         }
+
+        List<Integer> ids = new ArrayList<>();
+        for (Student s : students) {
+            ids.add(s.getId());
+        }
+        registrar.add(new Registrar(courses.get(3).getCourseNumber(), ids));
     }
 }
