@@ -19,7 +19,6 @@ public class ServiceController {
     private final AtomicInteger counter = new AtomicInteger();
 
     ServiceController() {
-        // TODO init with dummy data
         init();
     }
 
@@ -48,11 +47,11 @@ public class ServiceController {
                                               @RequestParam(value = "email") String email) {
         // Validation on newStudent info as needed
         Student newStudent = new Student(counter.incrementAndGet(), firstname, lastname, LocalDate.now(), "");
-        if (newStudent.setDateOfBirth(dateOfBirth)) {
+        if (!newStudent.setDateOfBirth(dateOfBirth)) {
             ResponseEntity re = ResponseEntity.badRequest().body("Bad dateOfBirth format");
             return re;
         }
-        if (newStudent.setEmail(email)) {
+        if (!newStudent.setEmail(email)) {
             ResponseEntity re = ResponseEntity.badRequest().body("Bad email format");
             return re;
         }

@@ -72,10 +72,8 @@ public class Student {
     }
 
     public boolean validateEmail(String email) {
-        if (email == null) {
+        if (email == null)
             return false;
-        }
-
-        return email.matches("^[a-zA-Z0-9_\\.]+@[a-zA-Z0-9_\\.]+\\.[a-zA-Z]{2,}$");
+        return email.matches("^[A-Za-z0-9+_.-]+@(.+)$");
     }
 }
